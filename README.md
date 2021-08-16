@@ -88,23 +88,5 @@ tags = {
 
 
 
-# building a script to connect to aws and download/setup all dependecies
-# keyword: provider aws
-
- provider "aws" {
-        region = "eu-west-1"
-
-
-}
-
-
-
-
-# terraform init 
-# launch aws services
-# Let's launch an EC2 instance in eu-west-1
-# The keyword is resource and provide the resource name and give the name with specific details of the service
-
-
 
 
