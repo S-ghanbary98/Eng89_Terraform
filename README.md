@@ -91,6 +91,60 @@ tags = {
 - Route Tables, Internet gateways, NACL's and Security groups will also be created.
 
 
+#### VPC Creation
+
+- The vpc was created by modifying the main.tf file to contain the following, which initialises the VPC.
+
+```python
+resource "aws_vpc" "main" {
+  cidr_block = "10.209.0.0/16"
+
+  tags = {
+    Name = "eng89_shervin_terr_vpc"
+ }
+}
+```
 
 
+#### Subnets
 
+- The private and public subnets where created via the following code. 
+- The private subnet has an IPV4 of 10.209.2.0/24, and the public has an IPV4 of 10.209.1.0/24.
+
+```python
+resource "aws_subnet" "main" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.209.1.0/24"
+  availability_zone = "${var.AWS_REGION}"
+
+  tags = {
+    Name = "eng89_shervin_terraform"
+  }
+}
+
+resource "aws_subnet" "private" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.209.2.0/24"
+  availability_zone = "${var.AWS_REGION}"
+
+  tags = {
+    Name = "eng89_shervin_private_terraform"
+  }
+}
+```
+
+
+#### Creating an Internet Gateway
+
+- The internet gateway was created Via the following.
+- It is attached to the VPC via `vpx_id`
+
+```python
+resource "aws_internet_gateway" "gw" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "eng89_shervin_terraform_IG"
+  }
+}
+```
