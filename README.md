@@ -148,3 +148,13 @@ resource "aws_internet_gateway" "gw" {
   }
 }
 ```
+
+#### Routing Table
+
+
+
+#### Network ACL
+
+
+
+#### Security Groups
