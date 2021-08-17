@@ -84,7 +84,11 @@ tags = {
 - If we wish to destroy the Ec2 instance we can do this via the command `terraform destroy`.
 
 
+## Launching a VPC
 
+- In this task we will be creating our own VPC network.
+- The VPC will have a private, public and bastion servers.
+- Route Tables, Internet gateways, NACL's and Security groups will also be created.
 
 
 
