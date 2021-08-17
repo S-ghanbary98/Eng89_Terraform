@@ -202,12 +202,55 @@ resource "aws_security_group" "security_app" {
 }
 ```
 
+- The configuration for the security group of the DB can be seen below
+
+```python
+resource "aws_security_group" "private" {
+  vpc_id = aws_vpc.main.id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = -1
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
+  
+    cidr_blocks = ["92.0.86.233/32"]
+  }
+
+  ingress {
+    from_port = 27017
+    to_port   = 27017
+    protocol  = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  //If you do not add this rule, you can not reach the NGIX  
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "eng89_shervin_terraform_priv"
+  }
+}
+
+```
+
 #### Running New Ec2 Instance
 
-- We can run a new instance with the new VPC configuration.
+- We can run new instances for the db and app with the new VPC configuration.
 - This can be seen below.
 
 ```python
+
+#app
 resource "aws_instance" "app_instance" {
   ami = "ami-046036047eac23dc9"
   instance_type = "t2.micro"
@@ -220,5 +263,22 @@ resource "aws_instance" "app_instance" {
   key_name = "eng89_shervin"
 
 }
+
+
+#DB
+resource "aws_instance" "app_instance2" {
+  ami = "ami-0a2a0deac91474c88"
+  instance_type = "t2.micro"
+  associate_public_ip_address = true
+  subnet_id = aws_subnet.private.id
+  vpc_security_group_ids = [aws_security_group.private.id]
+  tags = {
+      Name = "eng89_shervin_terraform_db"
+  }
+   #The key_name to ssh into instance
+  key_name = "eng89_shervin"
+  
+}
+
 
 ```
