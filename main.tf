@@ -114,6 +114,54 @@ resource "aws_network_acl" "public_nacl" {
 }
 
 
+resource "aws_network_acl" "public_nacl" {
+  vpc_id = aws_vpc.main.id
+
+
+  ingress {
+      protocol   = "tcp"
+      rule_no    = 100
+      action     = "allow"
+      cidr_block = "92.0.86.233/32"
+      from_port  = 22
+      to_port    = 22
+    }
+
+
+
+  ingress {
+      protocol   = "tcp"
+      rule_no    = 110
+      action     = "allow"
+      cidr_block = "0.0.0.0/0"
+      from_port  = 80
+      to_port    = 80
+    }
+
+  egress {
+      protocol   = "tcp"
+      rule_no    = 120
+      action     = "allow"
+      cidr_block = "0.0.0.0/0"
+      from_port  = 1024
+      to_port    = 65535
+    }
+
+  egress {
+      protocol   = -1
+      rule_no    = 100
+      action     = "allow"
+      cidr_block = "0.0.0.0/0"
+      from_port  = 0
+      to_port    = 0
+    }
+
+  tags = {
+    Name = "eng89_shervin_terraform_private_NACL"
+  }
+}
+
+
 resource "aws_security_group" "security_app" {
   vpc_id = aws_vpc.main.id
 
