@@ -97,10 +97,10 @@ tags = {
 
 ```python
 resource "aws_vpc" "main" {
-  cidr_block = "10.209.0.0/16"
+  cidr_block = var.cidr_block
 
   tags = {
-    Name = "eng89_shervin_terr_vpc"
+    Name = var.vpc_name
  }
 }
 ```
@@ -115,7 +115,7 @@ resource "aws_vpc" "main" {
 resource "aws_subnet" "main" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "10.209.1.0/24"
-  availability_zone = "${var.AWS_REGION}"
+  availability_zone = var.AWS_REGION
 
   tags = {
     Name = "eng89_shervin_terraform"
@@ -151,6 +151,24 @@ resource "aws_internet_gateway" "gw" {
 
 #### Routing Table
 
+- We can now create our routing table Via the following.
+
+```python
+resource "aws_route_table" "prod-public-crt" {
+    vpc_id = aws_vpc.terraform_vpc_code_test.id
+    
+    route {
+        //associated subnet can reach everywhere
+        cidr_block = "0.0.0.0/0" 
+        //CRT uses this IGW to reach internet
+        gateway_id = aws_internet_gateway.gw.id
+    }
+    
+    tags = {
+        Name = "eng89_shervin_terr_RT"
+    }
+}
+```
  
 
 #### Network ACL
@@ -301,6 +319,7 @@ resource "aws_security_group" "private" {
 
 - We can run new instances for the db and app with the new VPC configuration.
 - This can be seen below.
+- Once run we can then Enter the machines and run the js application.
 
 ```python
 
@@ -314,7 +333,7 @@ resource "aws_instance" "app_instance" {
   tags = {
       Name = "eng89_shervin_terraform_app"
   }
-  key_name = "eng89_shervin"
+  key_name = var.key_name
 
 }
 
@@ -329,10 +348,13 @@ resource "aws_instance" "app_instance2" {
   tags = {
       Name = "eng89_shervin_terraform_db"
   }
-   #The key_name to ssh into instance
-  key_name = "eng89_shervin"
+  
+  key_name = var.key_name
   
 }
 
 
 ```
+
+
+#### Provisioning EC2 using Terraform
